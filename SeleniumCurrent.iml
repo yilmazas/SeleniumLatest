@@ -8,7 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="seleniumhq.selenium.java" level="project" />
-    <orderEntry type="library" name="slf4j.nop" level="project" />
     <orderEntry type="module-library">
       <library name="JUnit4">
         <CLASSES>
@@ -19,6 +18,9 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="slf4j.nop" level="project" />
     <orderEntry type="library" name="commons.io" level="project" />
+    <orderEntry type="library" name="github.javafaker" level="project" />
+    <orderEntry type="library" name="testng" level="project" />
   </component>
 </module>
