@@ -1,8 +1,13 @@
 package testingproject3;
 
+import com.github.javafaker.Faker;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -21,13 +26,15 @@ import java.time.Duration;
  */
 public class project3 extends BaseDriver {
 
-    WebDriverWait wait= new WebDriverWait(driver, Duration.ofSeconds(30));
+    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+    Faker randomGenerator = new Faker();
+
     @Test
-    public void test1(){
+    public void test1() {
 
         driver.get("https://shopdemo.e-junkie.com/");
 
-        WebElement eBook= driver.findElement(By.linkText("Ebook"));
+        WebElement eBook = driver.findElement(By.linkText("Ebook"));
         eBook.click();
 
         WebElement eBookAddToCart = driver.findElement(By.xpath("//button[@class='view_product']"));
@@ -63,9 +70,9 @@ public class project3 extends BaseDriver {
 ➢ Pay butonuna tıklatınız.
 ➢ Invalid Email, Invalid Email, invalid billing name mesajlarının görüldüğünü doğrulayınız.
  */
-    public void test2(){
+    public void test2() {
         driver.get("https://shopdemo.e-junkie.com/");
-        WebElement eBook= driver.findElement(By.linkText("Ebook"));
+        WebElement eBook = driver.findElement(By.linkText("Ebook"));
         eBook.click();
 
         WebElement eBookAddToCart = driver.findElement(By.xpath("//button[@class='view_product']"));
@@ -74,19 +81,19 @@ public class project3 extends BaseDriver {
         WebElement iframe = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//iframe[@class='EJIframeV3 EJOverlayV3']")));
         driver.switchTo().frame(iframe);
 
-        WebElement payCreditCard= wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[class='Payment-Button CC']")));
+        WebElement payCreditCard = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[class='Payment-Button CC']")));
         payCreditCard.click();
 
-        WebElement payButton= wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[class='Pay-Button']")));
+        WebElement payButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[class='Pay-Button']")));
         payButton.click();
 
-        WebElement confirmationMessage= driver.findElement(By.xpath("//span[text()='Invalid Email']"));
-        Assert.assertEquals(confirmationMessage.getText(),"Invalid Email\n" + "Invalid Email\n" + "Invalid Billing Name");
+        WebElement confirmationMessage = driver.findElement(By.xpath("//span[text()='Invalid Email']"));
+        Assert.assertEquals(confirmationMessage.getText(), "Invalid Email\n" + "Invalid Email\n" + "Invalid Billing Name");
 
     }
 
     @Test
-    public void test3(){
+    public void test3() {
         /*
 
 Test Case:3
@@ -96,7 +103,8 @@ Test Case:3
 ➢ “Your card number is invalid” mesajının görüldüğünü doğrulayınız.
  */
         driver.get("https://shopdemo.e-junkie.com/");
-        WebElement eBook= driver.findElement(By.linkText("Ebook"));
+
+        WebElement eBook = driver.findElement(By.linkText("Ebook"));
         eBook.click();
 
         WebElement eBookAddToCart = driver.findElement(By.xpath("//button[@class='view_product']"));
@@ -105,24 +113,126 @@ Test Case:3
         WebElement iframe = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//iframe[@class='EJIframeV3 EJOverlayV3']")));
         driver.switchTo().frame(iframe);
 
-        WebElement payCreditCard= wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[class='Payment-Button CC']")));
+        WebElement payCreditCard = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[class='Payment-Button CC']")));
         payCreditCard.click();
 
-        WebElement iframeCardNumber= driver.findElement(By.cssSelector("iframe[name^='__privateStripeFrame']"));
+        WebElement iframeCardNumber = driver.findElement(By.cssSelector("iframe[name^='__privateStripeFrame']"));
         driver.switchTo().frame(iframeCardNumber);
 
-        WebElement cardNumber= driver.findElement(By.cssSelector("[name='cardnumber']"));
+        WebElement cardNumber = driver.findElement(By.cssSelector("[name='cardnumber']"));
         cardNumber.sendKeys("1111 1111 1111 1111");
 
-        MyFunction.wait(2);
+        driver.switchTo().parentFrame();
 
-        driver.switchTo().defaultContent();
-        MyFunction.wait(2);
-        WebElement shadowHost= driver.findElement(By.xpath("//ion-icon[@class='Close-SnackBar md hydrated']"));
-        SearchContext shadowContent = shadowHost.getShadowRoot();
-        WebElement confirmationMessage= shadowContent.findElement(By.xpath("//span[text()='Your card number is invalid.']"));
+        WebElement confirmationMessage = driver.findElement(By.xpath("//span[text()='Your card number is invalid.']"));
 
-        Assert.assertEquals(confirmationMessage.getText(),"Your card number is invalid.");
+        Assert.assertEquals(confirmationMessage.getText(), "Your card number is invalid.");
+
+
+    }
+
+    @Test
+    public void test4() {
+        /*
+
+Test Case: 4
+
+➢ https://shopdemo.e-junkie.com/ sitesine gidiniz
+➢ E-book add to cart butonuna tıklatınız.
+➢ Pay using debit card a tıklatınız.
+➢ Email, confirm Email, name, telefon, company, Card number(“4242 4242 4242 4242” ) giriniz,
+expdate, cvc kodu bilgilerini doldurunuz
+➢ Pay butonuna tıklayınız
+➢ “your order is confirmed. Thank you!” mesajının görüldüğünü doğrulayınız
+ */
+        driver.get("https://shopdemo.e-junkie.com/");
+
+        WebElement eBook = driver.findElement(By.linkText("Ebook"));
+        eBook.click();
+
+        WebElement eBookAddToCart = driver.findElement(By.xpath("//button[@class='view_product']"));
+        eBookAddToCart.click();
+
+        WebElement iframe = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//iframe[@class='EJIframeV3 EJOverlayV3']")));
+        driver.switchTo().frame(iframe);
+
+        WebElement payCreditCard = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[class='Payment-Button CC']")));
+        payCreditCard.click();
+        String mail = RandomStringUtils.randomAlphanumeric(8) + "@gmail.com"; // bu sekilde bir String deger olusturduk
+
+        WebElement email = driver.findElement(By.cssSelector("[placeholder='Email']"));
+        email.sendKeys(mail); // gmailden onceki harf ve rakam grubunu olusturduk
+        // commons-lang3 project structure kismindan ekledik
+        WebElement confirmEmail = driver.findElement(By.cssSelector("[placeholder='Confirm Email']"));
+        confirmEmail.sendKeys(mail);
+
+        WebElement name = driver.findElement(By.cssSelector("[placeholder='Name On Card']"));
+        name.sendKeys(randomGenerator.name().fullName());
+        WebElement phoneNumber = driver.findElement(By.xpath("(//input[@autocomplete='phone'])[1]"));
+        phoneNumber.sendKeys(RandomStringUtils.randomNumeric(10));
+
+        WebElement companyName = driver.findElement(By.xpath("//input[@autocomplete='company']"));
+        companyName.sendKeys(randomGenerator.company().name());
+
+        WebElement iframeCardNumber = driver.findElement(By.cssSelector("iframe[name^='__privateStripeFrame']"));
+        driver.switchTo().frame(iframeCardNumber);
+
+        WebElement cardNumber = driver.findElement(By.cssSelector("[name='cardnumber']"));
+        cardNumber.sendKeys("4242 4242 4242 4242");
+
+        WebElement expiryDate = driver.findElement(By.xpath("//input[@placeholder='MM / YY']"));
+        expiryDate.sendKeys("1223");
+
+        WebElement CVC = driver.findElement(By.xpath("//input[@placeholder='CVC']"));
+        CVC.sendKeys("000");
+
+        driver.switchTo().parentFrame();
+
+        WebElement payButton = driver.findElement(By.cssSelector("[class='Pay-Button']"));
+        payButton.click();
+        wait.until(ExpectedConditions.titleContains("E-junkie - Thank you"));
+        //MyFunction.wait(20);
+
+        WebElement confirmationMessage = driver.findElement(By.xpath("//span[@class='green_text_margin']"));
+        Assert.assertTrue(confirmationMessage.getText().contains("your order is confirmed. Thank you!"), "the process was not true");
+
+//        System.out.println("driver.getCurrentUrl() = " + driver.getCurrentUrl());
+    }
+
+    @Test
+    public void test5() {
+          /*
+
+Test Case:5
+
+➢ https://shopdemo.e-junkie.com/ sitesine gidiniz
+➢ ContactUs butonuna tıklattınız
+➢ Name, Email, Subject ve mesaj kısımlarını doldurun
+➢ Send butonuna tıklatın
+➢ Alert in görüldüğünü doğrulayın ve alert I kapatın
+ */
+        driver.get("https://shopdemo.e-junkie.com/");
+
+        WebElement contactUs = driver.findElement(By.linkText("Contact Us"));
+        contactUs.click();
+
+        WebElement name = driver.findElement(By.id("sender_name"));
+        name.sendKeys(randomGenerator.name().fullName());
+
+        WebElement email = driver.findElement(By.id("sender_email"));
+        email.sendKeys(randomGenerator.internet().emailAddress());
+
+        WebElement subject = driver.findElement(By.id("sender_subject"));
+        subject.sendKeys(randomGenerator.shakespeare().kingRichardIIIQuote());
+
+        WebElement message = driver.findElement(By.id("sender_message"));
+        message.sendKeys(randomGenerator.chuckNorris().fact());
+
+        WebElement sendMessage = driver.findElement(By.id("send_message_button"));
+        sendMessage.click();
+
+        wait.until(ExpectedConditions.alertIsPresent());
+        driver.switchTo().alert().accept();
 
         waitAndClose();
 
